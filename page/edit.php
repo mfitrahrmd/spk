@@ -64,7 +64,10 @@
                       <div class="col-md-6">
                         <div class="form-groups">
                           <label class="bmd-label-floating">Foto</label><p>
-                          <?php echo "<img src='../assets/foto/$r[foto]' width='300' height='250' />"; ?><p> 
+                          <!-- Foto full cover, tanpa stretching -->
+                          <div style="width: 300px; height: 400px;">
+                          <img src="<?php echo '../assets/foto/', $r['foto']; ?>" alt="foto_profil" style="width:100%; height:100%; object-fit: cover; object-position: center;">
+                          </div>
                           <input type="file" name="foto" class="form-control-file" >
                         </div>
                       </div>
@@ -80,19 +83,47 @@
             </div>
           </div>
 
-<?php
-$koneksi = new mysqli("localhost", "root", "", "db_spk");
-require_once('./../config/data.php');
-if (isset($_POST['tambahg'])) {
-  $file_name  = $_FILES['foto']['name'];
-  $file_tmp   = $_FILES['foto']['tmp_name'];
-  if (!empty($file_tmp)) {
-    move_uploaded_file($file_tmp, "../assets/foto/$file_name");
-    mysqli_query($koneksi, "UPDATE atlit SET nik='$_POST[nik]', nama='$_POST[nama]',tmpt_lahir='$_POST[tmpt_lhr]',tgl_lahir='$_POST[tgl_lhr]',jk= '$_POST[jk]',alamat='$_POST[alamat]',foto= '$file_name', timestamp= '$timestamp' where id='$_GET[id]'");
-  } else {
-    mysqli_query($koneksi, "UPDATE atlit SET nik='$_POST[nik]', nama='$_POST[nama]',tmpt_lahir='$_POST[tmpt_lhr]',tgl_lahir='$_POST[tgl_lhr]',jk= '$_POST[jk]',alamat='$_POST[alamat]', timestamp='$timestamp' where id='$_GET[id]'");
-  }
-
-  echo "<script>alert('Correct, Atlit Berhasil Diubah!');location='./?p=data'</script>";
-}
-?>
+          <?php
+          require_once('./../config/data.php');
+          if (isset($_POST['tambahg'])) {
+            // File data
+            $file_name  = $_FILES['foto']['name'];
+            $file_tmp   = $_FILES['foto']['tmp_name'];
+            // Form data
+            $id = $_GET['id'];
+            $nik = $_POST['nik'];
+            $nama = $_POST['nama'];
+            $tmpt_lhr = $_POST['tmpt_lhr'];
+            $tgl_lhr = $_POST['tgl_lhr'];
+            $jk = $_POST['jk'];
+            $alamat = $_POST['alamat'];
+            if (!empty($file_tmp)) {
+              // Pindahkan file upload
+              $edit_foto = move_uploaded_file($file_tmp, './../assets/foto/' . $r['foto']);
+              if ($edit_foto) {
+                echo "<script>alert('foto changed')</script>";
+              } else {
+                echo "<script>alert('foto not changed')</script>";
+              }
+              // Edit data atlit
+              $edit_atlit = $atlits->atlit_edit($id, $nik, $nama, $tmpt_lhr, $tgl_lhr, $jk, $alamat);
+              // cek apakah query berhasil
+              if ($edit_atlit) {
+                echo "<script>alert('success')</script>";
+              } else {
+                echo "<script>alert('fail')</script>";
+              }
+              echo "<script>location='./?p=data'</script>";
+            } else {
+              // Edit data atlit
+              $edit_atlit = $atlits->atlit_edit($id, $nik, $nama, $tmpt_lhr, $tgl_lhr, $jk, $alamat);
+              // cek apakah query berhasil
+              if ($edit_atlit) {
+                echo "<script>alert('success')</script>";
+              } else {
+                echo "<script>alert('fail')</script>";
+              }
+              echo "<script>location='./?p=data'</script>";
+            }
+          }
+          ?>
