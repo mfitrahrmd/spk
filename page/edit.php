@@ -65,10 +65,20 @@
                         <div class="form-groups">
                           <label class="bmd-label-floating">Foto</label><p>
                           <!-- Foto full cover, tanpa stretching -->
-                          <div style="width: 300px; height: 400px;">
-                          <img src="<?php echo '../assets/foto/', $r['foto']; ?>" alt="foto_profil" style="width:100%; height:100%; object-fit: cover; object-position: center;">
-                          </div>
-                          <input type="file" name="foto" class="form-control-file" >
+                          <div class="fileinput fileinput-new text-center" data-provides="fileinput" style=" display: flex; flex-direction:column;">
+                        <div class="fileinput-new thumbnail img-raised" style="width:300px; height:400px; margin:0 auto">
+                  
+                          <img src="<?php echo './../assets/foto/', $r['foto']; ?>" alt="foto_profil" style="width:100%; height:100%; object-fit: cover; object-position: center; margin:auto">
+                         
+                        </div>
+                        <div>
+                            <span class="btn btn-raised btn-round btn-default btn-file">
+                                <span class="fileinput-new">Select image</span>
+                                <span class="fileinput-exists">Change</span>
+                                <input type="file" name="foto" />
+                            </span>
+                        </div>
+                    </div>
                         </div>
                       </div>
                     </div>

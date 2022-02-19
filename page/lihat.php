@@ -1,88 +1,52 @@
-<?php 
+<?php
 
-$koneksi =new mysqli("localhost","root","","db_spk");
-$ambil = $koneksi->query("SELECT * FROM atlit join prestasi ON atlit.id=prestasi.id_atlit where atlit.id='$_GET[id]'");
+$koneksi = new mysqli("localhost", "root", "", "db_spk");
+$ambil = $koneksi->query("SELECT * FROM atlit  where id='$_GET[id]'");
 $r = $ambil->fetch_assoc();
-$jenis = $r['jk'];
+$prestas = $koneksi->query("SELECT * FROM prestasi  where id_atlit='$_GET[id]'");
+$total_pres = $prestas->num_rows;
 
+function jenis_prestasi($pres)
+{
+  switch ($pres) {
+    case $pres == 1:
+      return "Daerah";
+      break;
+    case $pres == 3:
+      return "Nasional";
+      break;
+  }
+}
 ?>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <form method="POST" enctype="multipart/form-data">
 
-                  <div class="card-header card-header-primary">
-                    <h4 class="card-title">Profile <?=$r['nama']?></h4>
-                    <p class="card-category">Lihat data profil atlit</p>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">NIK</label>
-                          <input type="text" name="nik" required maxlength="16" class="form-control" value="<?=$r['nik']?>" readonly>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Nama</label>
-                          <input type="text" name="nama" required class="form-control" value="<?=$r['nama']?>" readonly>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Tempat Lahir</label>
-                          <input type="" name="tmpt_lhr"  class="form-control" value="<?=$r['tmpt_lhr']?>" readonly>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Tanggal Lahir</label>
-                          <input type="" name="tgl_lhr"  class="form-control" value="<?=$r['tgl_lhr']?>" readonly>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <div class="form-group">
-                            <label class="bmd-label-floating">Alamat Lengkap</label>
-                            <input type="text" class="form-control" name="alamat" rows="6" value="<?=$r['alamat']?>" readonly></textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Tanggal Daftar</label>
-                          <input type="text" name="nik" required maxlength="16" class="form-control" value="<?=$r['timestamp']?>" readonly>
-                        </div>
-                      </div>
-                  </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Jenis Kelamin </label><br/>
-                          <input type="text" name="nik" required maxlength="16" class="form-control" value="<?=$r['jk']?>"  readonly>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Foto</label><p>
-                          <?php echo "<img src='../assets/foto/$r[foto]' width='300' height='250' />";?>
-                        </div>
-                      </div>
-                    
-                      <div class="col md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">File Prestasi </label><br/>
-                         <?php echo "<img src='../assets/prestasi/$r[file]' width='300' height='250' />";?>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="clearfix"></div>
-                  </div>
-</form></div></div></div>
+
+<div class="row" style="justify-content: center;">
+  <div class="col-12 col-md-8">
+    <div class="card">
+      <img src="<?php echo './../assets/foto/', $r['foto']; ?>" alt="foto_profil" style="height: 400px; object-fit:cover">
+      <div class="card-body">
+        <h4 class="card-title text-right">NIK : <?= $r['nik']; ?></h4>
+        <h4 class="card-title"><?= $r['nama']; ?></h4>
+        <p><?= $r['jk']; ?></p>
+        <h6 class="card-subtitle mb-2 text-muted"><?= $r['tmpt_lhr']; ?></h6>
+        <p class="card-text"><?= $r['alamat']; ?></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <?php
+  if ($total_pres > 0) {
+    while ($p = $prestas->fetch_assoc()) { ?>
+      <div class="col-12">
+        <div class="card">
+          <img src="<?php echo './../assets/prestasi/', $p['file']; ?>" alt="foto_profil" style="height: 400px; object-fit:cover">
+          <div class="card-body">
+            <h4 class="card-title text-right">Jenis Prestasi : <?= jenis_prestasi($p['jenis']) ?></h4>
+            <h4 class="card-title">Ketarangan : <?= $p['keterangan']; ?></h4>
+          </div>
+        </div>
+      </div>
+  <?php }
+  } ?>
+</div>

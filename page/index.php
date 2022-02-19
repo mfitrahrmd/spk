@@ -1,14 +1,14 @@
-<?php 
+<?php
 include "koneksi.php";
-    session_start();
-    if(($_SESSION['level'] != "admin")){
-      session_destroy();
-      header("Location: ../");
-      exit;
-    }
-    date_default_timezone_set('Asia/Jakarta');
-    $id             = strtotime("now");
-    $timestamp      = date('Y-m-d H:i:s');
+session_start();
+if (($_SESSION['level'] != "admin")) {
+  session_destroy();
+  header("Location: ../");
+  exit;
+}
+date_default_timezone_set('Asia/Jakarta');
+$id             = strtotime("now");
+$timestamp      = date('Y-m-d H:i:s');
 ?>
 
 <!DOCTYPE html>
@@ -18,6 +18,7 @@ include "koneksi.php";
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
     Sistem Pendukung Keputusan
@@ -51,16 +52,31 @@ include "koneksi.php";
               <p>Dashboard</p>
             </a>
           </li>
+
+          <li class="nav-item ">
+            <a class="nav-link" href="?p=data">
+              <i class="material-icons">person</i>
+              <p>Data Atlit</p>
+            </a>
+          </li>
           <li class="nav-item ">
             <a class="nav-link" href="?p=tambah">
               <i class="material-icons">content_paste</i>
               <p>Tambah Data Atlit</p>
             </a>
           </li>
+
           <li class="nav-item ">
-            <a class="nav-link" href="?p=data">
-              <i class="material-icons">person</i>
-              <p>Data Atlit</p>
+            <a class="nav-link" href="?p=tambah_penilaian_atlit">
+              <i class="material-icons">note_alt</i>
+              <p>Tambah Penilaian Atlit</p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
+            <a class="nav-link" href="?p=tambah_prestasi">
+              <i class="material-icons">create</i>
+              <p>Tambah Prestasi Atlit</p>
             </a>
           </li>
           <li class="nav-item ">
@@ -98,13 +114,13 @@ include "koneksi.php";
                   </p>
                 </a>
                 <?php
-                $koneksi =new mysqli("localhost","root","","db_spk");
-                 $ambil = $koneksi->query("SELECT*FROM user"); ?>
-    <?php while ($pecah = $ambil->fetch_assoc()) { ?>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="?p=ubahpassword&username=<?php echo $pecah['username']; ?>">Ubah Password</a>
-                  <a class="dropdown-item" href="?p=keluar">Keluar</a>
-                </div>
+                $koneksi = new mysqli("localhost", "root", "", "db_spk");
+                $ambil = $koneksi->query("SELECT*FROM user"); ?>
+                <?php while ($pecah = $ambil->fetch_assoc()) { ?>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="?p=ubahpassword&username=<?php echo $pecah['username']; ?>">Ubah Password</a>
+                    <a class="dropdown-item" href="?p=keluar">Keluar</a>
+                  </div>
               </li>
             </ul>
           </div>
@@ -112,78 +128,86 @@ include "koneksi.php";
       </nav>
     <?php }
     ?>
-      <!-- End Navbar -->
+    <!-- End Navbar -->
 
-      <div class="content">
-        <div class="container-fluid">
-        	<?php 
-	          if(isset($_GET['p'])){
-	            $hal = $_GET['p'];
-	            switch ($hal) {
-	              case 'beranda':
-	                include "beranda.php";
-	              break;
-	              case 'tambah':
-	                include "tambah.php";
-	              break;
-                case 'lihat':
-                  include "lihat.php";
-                break;
-                 case 'edit':
-                  include "edit.php";
-                break;
-	              case 'data':
-	                include "data.php";
-	              break;
-	              case 'penilaian':
-	                include "penilaian.php";
-	              break;
-	              case 'rank':
-	                include "ranking.php";
-	              break;
-	              case 'ubahpassword':
-	                include "ubahpassword.php";
-	              break;
-                case 'hapus':
-                  include "hapus.php";
-                break;
-                case 'keluar':
-                  session_destroy();
-                  echo "<script>location='./../'</script>";
-                  exit;
-                break;
+    <div class="content">
+      <div class="container-fluid">
+        <?php
+        if (isset($_GET['p'])) {
+          $hal = $_GET['p'];
+          switch ($hal) {
+            case 'beranda':
+              include "beranda.php";
+              break;
+            case 'tambah':
+              include "tambah.php";
+              break;
+            case 'tambah_penilaian_atlit':
+              include "tambah_penilaian_atlit.php";
+              break;
+            case 'tambah_prestasi':
+              include "tambah_prestasi.php";
+              break;
+            case 'lihat':
+              include "lihat.php";
+              break;
+            case 'edit':
+              include "edit.php";
+              break;
+            case 'data':
+              include "data.php";
+              break;
+            case 'penilaian':
+              include "penilaian.php";
+              break;
+            case 'rank':
+              include "ranking.php";
+              break;
+            case 'ubahpassword':
+              include "ubahpassword.php";
+              break;
+            case 'hapus':
+              include "hapus.php";
+              break;
 
-                default:
-                    include "beranda.php";
-                break;
-              }
-	          }
-	          else {
-	            include "beranda.php";
-	          }
-	        ?>
-        </div>
+            case 'keluar':
+              session_destroy();
+              echo "<script>location='./../'</script>";
+              exit;
+              break;
+
+            default:
+              include "beranda.php";
+              break;
+          }
+        } else {
+          include "beranda.php";
+        }
+        ?>
       </div>
+    </div>
 
-      <footer class="footer">
-        <div class="container-fluid">
-          <div class="copyright float-center">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>, Made With <i class="material-icons">favorite</i> By
-            <a href="#">Creative Tim</a> For a Better Web
-          </div>
-          <!-- your footer here -->
+    <footer class="footer">
+      <div class="container-fluid">
+        <div class="copyright float-center">
+          &copy;
+          <script>
+            document.write(new Date().getFullYear())
+          </script>, Made With <i class="material-icons">favorite</i> By
+          <a href="#">Creative Tim</a> For a Better Web
         </div>
-      </footer>
-      <script>
-        const x = new Date().getFullYear();
-        let date = document.getElementById('date');
-        date.innerHTML = '&copy; ' + x + date.innerHTML;
-      </script>
+        <!-- your footer here -->
+      </div>
+    </footer>
+    <script>
+      const x = new Date().getFullYear();
+      let date = document.getElementById('date');
+      date.innerHTML = '&copy; ' + x + date.innerHTML;
+    </script>
     </div>
   </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous" async></script>
   <!--   Core JS Files   -->
   <script src="../assets/js/core/jquery.min.js"></script>
   <script src="../assets/js/core/popper.min.js"></script>
@@ -202,7 +226,7 @@ include "koneksi.php";
   <script src="../assets/js/material-dashboard.js?v=2.1.0"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="../assets/demo/demo.js"></script>
- 
+
 </body>
 
 </html>
